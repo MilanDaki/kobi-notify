@@ -51,9 +51,40 @@ public class DataModelController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
-        var profiles = await _context.CustomerProfiles.ToListAsync();
-        return Ok(profiles);
+        var profiles = await _context.CustomerProfiles
+            .Include(p => p.FieldMappings)
+            .Include(p => p.FallbackRules)
+            .ToListAsync();
+
+        var result = profiles.Select(p => new CustomerProfileDto
+        {
+            Id = p.Id,
+            ModelName = p.ModelName,
+            Description = p.Description,
+            DataSourceId = p.DataSourceId,
+            DataSourceType = p.DataSourceType,
+            SqlQuery = p.SqlQuery,
+            RefreshIntervalMinutes = p.RefreshIntervalMinutes,
+            CreatedAt = p.CreatedAt,
+            IsPublished = p.IsPublished,
+            FieldMappings = p.FieldMappings?.Select(fm => new FieldMappingDto
+            {
+                FieldName = fm.FieldName,
+                Type = fm.Type,
+                MappingPath = fm.MappingPath
+            }).ToList(),
+            FallbackRules = p.FallbackRules?.Select(fr => new FallbackRuleDto
+            {
+                FieldName = fr.FieldName,
+                IsRequired = fr.IsRequired,
+                FallbackType = fr.FallbackType,
+                FallbackValue = fr.FallbackValue
+            }).ToList()
+        });
+
+        return Ok(result);
     }
+
 
     // POST: Test SQL Query against PostgreSQL
     [HttpPost("test-query")]
