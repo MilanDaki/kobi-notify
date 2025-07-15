@@ -2,20 +2,20 @@
 using kobi_notify.DTOs;
 using kobi_notify.Models;
 using kobi_notify.Models.DTOs;
+using System.Data.SqlClient;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Npgsql;
 
 namespace KobiNotifyAPI.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class CustomerProfileController : ControllerBase
+public class DataModelController : ControllerBase
 {
     private readonly KobiDbContext _context;
     private readonly IConfiguration _configuration;
 
-    public CustomerProfileController(KobiDbContext context, IConfiguration configuration)
+    public DataModelController(KobiDbContext context, IConfiguration configuration)
     {
         _context = context;
         _configuration = configuration;
@@ -23,15 +23,29 @@ public class CustomerProfileController : ControllerBase
 
     // POST: Save or Draft
     [HttpPost("save")]
-    public async Task<IActionResult> Save(CustomerProfileModel model)
+    public async Task<IActionResult> Save([FromBody] CustomerProfileDto dto)
     {
-        if (string.IsNullOrWhiteSpace(model.ModelName)) return BadRequest("ModelName is required.");
+        if (string.IsNullOrWhiteSpace(dto.ModelName))
+            return BadRequest("ModelName is required.");
 
-        model.CreatedAt = DateTime.UtcNow;
+        var model = new DataModel
+        {
+            ModelName = dto.ModelName,
+            Description = dto.Description,
+            DataSourceId = dto.DataSourceId,
+            DataSourceType = dto.DataSourceType,
+            SqlQuery = dto.SqlQuery,
+            RefreshIntervalMinutes = dto.RefreshIntervalMinutes,
+            CreatedAt = DateTime.UtcNow,
+            IsPublished = dto.IsPublished
+        };
+
         _context.CustomerProfiles.Add(model);
         await _context.SaveChangesAsync();
+
         return Ok(new { message = model.IsPublished ? "Published successfully" : "Saved as draft" });
     }
+
 
     // GET: All customer profiles
     [HttpGet]
@@ -43,22 +57,22 @@ public class CustomerProfileController : ControllerBase
 
     // POST: Test SQL Query against PostgreSQL
     [HttpPost("test-query")]
-    public async Task<IActionResult> TestSql([FromBody] CustomerProfileModel model)
+    public async Task<IActionResult> TestSql([FromBody] SqlTestDto model)
     {
         if (string.IsNullOrWhiteSpace(model.SqlQuery))
             return BadRequest("SQL Query is required.");
 
         try
         {
-            string? connString = _configuration.GetConnectionString("PostgresConnection");
+            string? connString = _configuration.GetConnectionString("DefaultConnection");
 
             if (string.IsNullOrEmpty(connString))
-                return BadRequest("PostgreSQL connection string not found.");
+                return BadRequest("SQL Server connection string not found.");
 
-            using var conn = new NpgsqlConnection(connString);
+            using var conn = new SqlConnection(connString);
             await conn.OpenAsync();
 
-            using var cmd = new NpgsqlCommand(model.SqlQuery, conn);
+            using var cmd = new SqlCommand(model.SqlQuery, conn);
             var reader = await cmd.ExecuteReaderAsync();
 
             var results = new List<Dictionary<string, object>>();
@@ -78,6 +92,8 @@ public class CustomerProfileController : ControllerBase
             return BadRequest(new { error = ex.Message });
         }
     }
+
+
 
     [HttpPost("save-field-mappings")]
     public async Task<IActionResult> SaveFieldMappings([FromBody] List<FieldMappingDto> mappings)

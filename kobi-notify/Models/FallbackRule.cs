@@ -21,6 +21,6 @@ namespace kobi_notify.Models
         public int CustomerProfileId { get; set; }
 
         [ForeignKey("CustomerProfileId")]
-        public CustomerProfileModel CustomerProfile { get; set; } = null!;
+        public DataModel CustomerProfile { get; set; } = null!;
     }
 }

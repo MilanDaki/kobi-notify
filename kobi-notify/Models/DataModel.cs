@@ -3,7 +3,7 @@ using kobi_notify.Models;
 
 namespace kobi_notify.Models
 {
-    public class CustomerProfileModel
+    public class DataModel
     {
         [Key]
         public int Id { get; set; }
@@ -19,7 +19,7 @@ namespace kobi_notify.Models
 
         public string SqlQuery { get; set; } = string.Empty;
 
-        public int RefreshInterval { get; set; }
+        public int RefreshIntervalMinutes { get; set; }
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 

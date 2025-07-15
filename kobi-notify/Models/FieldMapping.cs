@@ -13,7 +13,7 @@ namespace kobi_notify.Models
 
         public int CustomerProfileId { get; set; } 
 
-        public CustomerProfileModel? CustomerProfile { get; set; }
+        public DataModel? CustomerProfile { get; set; }
 
     }
 }
