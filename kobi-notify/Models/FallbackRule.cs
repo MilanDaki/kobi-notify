@@ -18,9 +18,9 @@ namespace kobi_notify.Models
         public string FallbackValue { get; set; } = string.Empty;
 
         // Foreign Key to CustomerProfile
-        public int CustomerProfileId { get; set; }
+        public int DataModelId { get; set; }
 
-        [ForeignKey("CustomerProfileId")]
-        public DataModel CustomerProfile { get; set; } = null!;
+        [ForeignKey("DataModelId")]
+        public DataModel DataModel { get; set; } = null!;
     }
 }

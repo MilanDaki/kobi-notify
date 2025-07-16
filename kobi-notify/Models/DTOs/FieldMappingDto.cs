@@ -6,6 +6,6 @@ namespace kobi_notify.DTOs
         public string FieldName { get; set; } = string.Empty;
         public string Type { get; set; } = string.Empty;
         public string MappingPath { get; set; } = string.Empty;
-        public int CustomerProfileId { get; set; }
+        public int DataModelId { get; set; }
     }
 }

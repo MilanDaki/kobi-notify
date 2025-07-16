@@ -34,14 +34,14 @@ namespace kobi_notify.Services.Implementation
                 ModelType = dto.ModelType // Added
             };
 
-            _context.CustomerProfiles.Add(model);
+            _context.DataModel.Add(model);
             await _context.SaveChangesAsync();
             return model.IsPublished ? "Published successfully" : "Saved as draft";
         }
 
         public async Task<List<DataModelProfileDto>> GetAllDataModelAsync()
         {
-            var profiles = await _context.CustomerProfiles
+            var profiles = await _context.DataModel
                 .Include(p => p.FieldMappings)
                 .Include(p => p.FallbackRules)
                 .ToListAsync();
@@ -114,7 +114,7 @@ namespace kobi_notify.Services.Implementation
 
             int DataModelId = mappings.First().DataModelId;
 
-            var exists = await _context.CustomerProfiles.AnyAsync(x => x.Id == DataModelId);
+            var exists = await _context.DataModel.AnyAsync(x => x.Id == DataModelId);
             if (!exists)
                 throw new Exception($"Customer profile with ID {DataModelId} does not exist.");
 
@@ -150,7 +150,7 @@ namespace kobi_notify.Services.Implementation
 
         public async Task<List<DataModelProfileDto>> GetModelsByTypeAsync(string modelType)
         {
-            var profiles = await _context.CustomerProfiles
+            var profiles = await _context.DataModel
                 .Where(x => x.ModelType.ToLower() == modelType.ToLower())
                 .Include(p => p.FieldMappings)
                 .Include(p => p.FallbackRules)

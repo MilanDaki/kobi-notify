@@ -14,9 +14,9 @@ namespace kobi_notify.Models
 
         public string MappingPath { get; set; } = string.Empty;
 
-        public int CustomerProfileId { get; set; }
+        public int DataModelId { get; set; }
 
-        [ForeignKey("CustomerProfileId")]
-        public DataModel? CustomerProfile { get; set; }
+        [ForeignKey("DataModelId")]
+        public DataModel? DataModel { get; set; }
     }
 }

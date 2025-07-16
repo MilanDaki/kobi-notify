@@ -13,6 +13,6 @@ namespace kobi_notify.DTOs
         public bool IsPublished { get; set; }
 
         // 🔧 Add this line
-        public string ModelType { get; set; } = "CustomerProfile";
+        public string ModelType { get; set; } = "";
     }
 }

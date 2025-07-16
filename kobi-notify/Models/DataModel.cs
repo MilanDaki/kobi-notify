@@ -24,7 +24,7 @@ namespace kobi_notify.Models
 
         public bool IsPublished { get; set; } = false;
 
-        public string ModelType { get; set; } = ""; // New field for dropdown support
+        public string ModelType { get; set; } = "DataModeltype"; // New field for dropdown support
 
         public ICollection<FieldMapping>? FieldMappings { get; set; }
         public ICollection<FallbackRule>? FallbackRules { get; set; }

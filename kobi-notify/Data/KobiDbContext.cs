@@ -10,7 +10,7 @@ namespace kobi_notify.Data
 
         }
 
-        public DbSet<DataModel> CustomerProfiles { get; set; }  
+        public DbSet<DataModel> DataModel { get; set; }  
         public DbSet<FieldMapping> FieldMappings { get; set; }
         public DbSet<FallbackRule> FallbackRules { get; set; }
         public DbSet<DataSource> DataSources { get; set; }
@@ -19,8 +19,8 @@ namespace kobi_notify.Data
         {
             modelBuilder.Entity<DataModel>()
                 .HasMany(cp => cp.FieldMappings)
-                .WithOne(fm => fm.CustomerProfile!)
-                .HasForeignKey(fm => fm.CustomerProfileId);
+                .WithOne(fm => fm.DataModel!)
+                .HasForeignKey(fm => fm.DataModelId);
         }
 
     }
