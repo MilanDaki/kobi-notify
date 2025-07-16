@@ -30,7 +30,7 @@ namespace KobiNotifyAPI.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var profiles = await _dataModelService.GetAllProfilesAsync();
+            var profiles = await _dataModelService.GetAllDataModelAsync();
             return Ok(profiles);
         }
 
@@ -55,9 +55,9 @@ namespace KobiNotifyAPI.Controllers
         }
 
         [HttpPost("fallback-rules")]
-        public async Task<IActionResult> SaveFallbackRules(int customerProfileId, [FromBody] List<FallbackRuleDto> rules)
+        public async Task<IActionResult> SaveFallbackRules(int DataModelId, [FromBody] List<FallbackRuleDto> rules)
         {
-            await _dataModelService.SaveFallbackRulesAsync(customerProfileId, rules);
+            await _dataModelService.SaveFallbackRulesAsync(DataModelId, rules);
             return Ok(new { message = "Fallback rules saved successfully." });
         }
 

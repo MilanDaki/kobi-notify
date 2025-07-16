@@ -6,9 +6,9 @@ namespace kobi_notify.Services.Interfaces
     public interface IDataModelService
     {
         Task<string> SaveDataModelAsync(DataModelProfileCreateDto dto);
-        Task<List<DataModelProfileDto>> GetAllProfilesAsync();
+        Task<List<DataModelProfileDto>> GetAllDataModelAsync();
         Task<(bool success, object result)> TestSqlQueryAsync(string sqlQuery);
         Task SaveFieldMappingsAsync(List<FieldMappingDto> mappings);
-        Task SaveFallbackRulesAsync(int customerProfileId, List<FallbackRuleDto> rules);
+        Task SaveFallbackRulesAsync(int DataModelId, List<FallbackRuleDto> rules);
     }
 }
