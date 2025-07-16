@@ -19,7 +19,7 @@ namespace kobi_notify.Services.Implementation
             _configuration = configuration;
         }
 
-        public async Task<string> SaveDataModelAsync(CustomerProfileCreateDto dto)
+        public async Task<string> SaveDataModelAsync(DataModelProfileCreateDto dto)
         {
             var model = new DataModel
             {
@@ -30,7 +30,8 @@ namespace kobi_notify.Services.Implementation
                 SqlQuery = dto.SqlQuery,
                 RefreshIntervalMinutes = dto.RefreshIntervalMinutes,
                 CreatedAt = DateTime.UtcNow,
-                IsPublished = dto.IsPublished
+                IsPublished = dto.IsPublished,
+                ModelType = dto.ModelType // Added
             };
 
             _context.CustomerProfiles.Add(model);
@@ -38,16 +39,14 @@ namespace kobi_notify.Services.Implementation
             return model.IsPublished ? "Published successfully" : "Saved as draft";
         }
 
-
-
-        public async Task<List<CustomerProfileDto>> GetAllProfilesAsync()
+        public async Task<List<DataModelProfileDto>> GetAllProfilesAsync()
         {
             var profiles = await _context.CustomerProfiles
                 .Include(p => p.FieldMappings)
                 .Include(p => p.FallbackRules)
                 .ToListAsync();
 
-            return profiles.Select(p => new CustomerProfileDto
+            return profiles.Select(p => new DataModelProfileDto
             {
                 Id = p.Id,
                 ModelName = p.ModelName,
@@ -115,16 +114,13 @@ namespace kobi_notify.Services.Implementation
 
             int customerProfileId = mappings.First().CustomerProfileId;
 
-            // 🔒 Ensure the profile exists
             var exists = await _context.CustomerProfiles.AnyAsync(x => x.Id == customerProfileId);
             if (!exists)
                 throw new Exception($"Customer profile with ID {customerProfileId} does not exist.");
 
-            // ✅ Optional: Remove previous mappings
             var existing = _context.FieldMappings.Where(f => f.CustomerProfileId == customerProfileId);
             _context.FieldMappings.RemoveRange(existing);
 
-            // 🔁 Add new mappings
             var entities = mappings.Select(m => new FieldMapping
             {
                 FieldName = m.FieldName,
@@ -136,8 +132,6 @@ namespace kobi_notify.Services.Implementation
             _context.FieldMappings.AddRange(entities);
             await _context.SaveChangesAsync();
         }
-
-
 
         public async Task SaveFallbackRulesAsync(int customerProfileId, List<FallbackRuleDto> rules)
         {
@@ -152,6 +146,28 @@ namespace kobi_notify.Services.Implementation
 
             _context.FallbackRules.AddRange(fallbackRules);
             await _context.SaveChangesAsync();
+        }
+
+        public async Task<List<DataModelProfileDto>> GetModelsByTypeAsync(string modelType)
+        {
+            var profiles = await _context.CustomerProfiles
+                .Where(x => x.ModelType.ToLower() == modelType.ToLower())
+                .Include(p => p.FieldMappings)
+                .Include(p => p.FallbackRules)
+                .ToListAsync();
+
+            return profiles.Select(p => new DataModelProfileDto
+            {
+                Id = p.Id,
+                ModelName = p.ModelName,
+                Description = p.Description,
+                DataSourceId = p.DataSourceId,
+                DataSourceType = p.DataSourceType,
+                SqlQuery = p.SqlQuery,
+                RefreshIntervalMinutes = p.RefreshIntervalMinutes,
+                CreatedAt = p.CreatedAt,
+                IsPublished = p.IsPublished
+            }).ToList();
         }
     }
 }

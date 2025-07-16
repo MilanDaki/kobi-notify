@@ -1,7 +1,6 @@
 ﻿using kobi_notify.DTOs;
 using kobi_notify.Models;
 using kobi_notify.Models.DTOs;
-using kobi_notify.Services;
 using kobi_notify.Services.Implementation;
 using Microsoft.AspNetCore.Mvc;
 
@@ -19,7 +18,7 @@ namespace KobiNotifyAPI.Controllers
         }
 
         [HttpPost("save")]
-        public async Task<IActionResult> Save([FromBody] CustomerProfileCreateDto dto)
+        public async Task<IActionResult> Save([FromBody] DataModelProfileCreateDto dto)
         {
             if (string.IsNullOrWhiteSpace(dto.ModelName))
                 return BadRequest("ModelName is required.");
@@ -27,7 +26,6 @@ namespace KobiNotifyAPI.Controllers
             var result = await _dataModelService.SaveDataModelAsync(dto);
             return Ok(new { message = result });
         }
-
 
         [HttpGet]
         public async Task<IActionResult> GetAll()
@@ -56,12 +54,21 @@ namespace KobiNotifyAPI.Controllers
             return Ok(new { message = "Field mappings saved successfully." });
         }
 
-
         [HttpPost("fallback-rules")]
         public async Task<IActionResult> SaveFallbackRules(int customerProfileId, [FromBody] List<FallbackRuleDto> rules)
         {
             await _dataModelService.SaveFallbackRulesAsync(customerProfileId, rules);
             return Ok(new { message = "Fallback rules saved successfully." });
+        }
+
+        [HttpGet("by-type/{modelType}")]
+        public async Task<IActionResult> GetByModelType(string modelType)
+        {
+            if (string.IsNullOrWhiteSpace(modelType))
+                return BadRequest("Model type is required.");
+
+            var models = await _dataModelService.GetModelsByTypeAsync(modelType);
+            return Ok(models);
         }
     }
 }

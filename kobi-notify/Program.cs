@@ -1,6 +1,7 @@
 ﻿using kobi_notify.Data;
 using kobi_notify.Services.Implementation;
 using kobi_notify.Services.Interfaces;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -15,6 +16,12 @@ builder.Services.AddScoped<DataModelService>();
 
 builder.Services.AddDbContext<KobiDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+builder.Services.Configure<FormOptions>(options =>
+{
+    options.MultipartBodyLengthLimit = 10_000_000; // 10 MB
+});
+
 
 builder.Services.AddScoped<IDataModelService, DataModelService>();
 builder.Services.AddScoped<IDataSourceService, DataSourceService>();

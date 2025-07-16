@@ -2,7 +2,7 @@
 
 namespace kobi_notify.Models.DTOs
 {
-    public class CustomerProfileDto
+    public class DataModelProfileDto
     {
         public int Id { get; set; }
         public string ModelName { get; set; } = string.Empty;

@@ -10,7 +10,7 @@ namespace kobi_notify.Data
 
         }
 
-        public DbSet<DataModel> CustomerProfiles { get; set; }
+        public DbSet<DataModel> CustomerProfiles { get; set; }  
         public DbSet<FieldMapping> FieldMappings { get; set; }
         public DbSet<FallbackRule> FallbackRules { get; set; }
         public DbSet<DataSource> DataSources { get; set; }
