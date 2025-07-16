@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using kobi_notify.Data;
 
@@ -11,9 +12,11 @@ using kobi_notify.Data;
 namespace kobi_notify.Migrations
 {
     [DbContext(typeof(KobiDbContext))]
-    partial class KobiDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250716052321_AddFieldMappingsTableProperly")]
+    partial class AddFieldMappingsTableProperly
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -62,38 +65,6 @@ namespace kobi_notify.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("CustomerProfiles");
-                });
-
-            modelBuilder.Entity("kobi_notify.Models.DataSource", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("ConnectionString")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("DataSourceName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("DatabaseType")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("SqlQuery")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("DataSources");
                 });
 
             modelBuilder.Entity("kobi_notify.Models.FallbackRule", b =>

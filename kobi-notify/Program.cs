@@ -1,5 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
-using kobi_notify.Data;
+﻿using kobi_notify.Data;
+using kobi_notify.Services.Implementation;
+using kobi_notify.Services.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,9 +11,14 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddScoped<DataModelService>();
 
 builder.Services.AddDbContext<KobiDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+builder.Services.AddScoped<IDataModelService, DataModelService>();
+builder.Services.AddScoped<IDataSourceService, DataSourceService>();
+
 
 
 
